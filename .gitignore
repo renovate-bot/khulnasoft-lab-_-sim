@@ -1,0 +1,12 @@
+**/Cargo.lock
+/target
+/sim/target
+/sim_derive/target
+/simx/target
+
+**/*.rs.bk
+
+**/wasm-pack.log
+
+.DS_Store
+.vscode/

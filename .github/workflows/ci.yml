@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule: [cron: "42 1 * * *"]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust: [stable, beta, nightly]
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust (rustup)
+      working-directory: ./sim
+      run: rustup update ${{ matrix.rust }} && rustup default ${{ matrix.rust }}
+    - name: Generate Cargo.lock
+      working-directory: ./sim
+      run: cargo generate-lockfile
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./sim/target
+        key: ${{ runner.os }}-cargo-${{ matrix.rust }}-${{ hashFiles('./sim/Cargo.lock') }}
+    - name: Run Tests (No Optional Features)
+      working-directory: ./sim
+      run: cargo test -- --nocapture
+    - name: Run Tests (All Optional Features)
+      working-directory: ./sim
+      run: cargo test --all-features -- --nocapture
+
+  wasm-pack:
+    name: Test (wasm)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Rust
+      working-directory: ./sim
+      run: rustup update stable && rustup default stable
+    - name: Generate Cargo.lock
+      working-directory: ./sim
+      run: cargo generate-lockfile
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./sim/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('./sim/Cargo.lock') }}
+    - name: Run Tests (wasm-pack)
+      working-directory: ./sim
+      run: |
+        cargo install --git https://github.com/rustwasm/wasm-pack.git
+        wasm-pack test --headless --chrome --firefox
+
+  rustfmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust
+      working-directory: ./sim
+      run: rustup update stable && rustup default stable && rustup component add rustfmt
+    - name: Generate Cargo.lock
+      working-directory: ./sim
+      run: cargo generate-lockfile
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./sim/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('./sim/Cargo.lock') }}
+    - name: Check Code Formatting
+      working-directory: ./sim
+      run: cargo fmt -- --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Rust
+      working-directory: ./sim
+      run: rustup update stable && rustup default stable && rustup component add clippy
+    - name: Generate Cargo.lock
+      working-directory: ./sim
+      run: cargo generate-lockfile
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ./sim/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('./sim/Cargo.lock') }}
+    - name: Run Clippy Checks
+      working-directory: ./sim
+      run: cargo clippy --all-features -- -Dclippy::all -Dclippy::pedantic || echo "exit $?"

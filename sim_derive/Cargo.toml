@@ -1,0 +1,19 @@
+[package]
+name = "sim_derive"
+version = "0.12.0"
+edition = "2018"
+license = "MIT OR Apache-2.0"
+authors = ["Neal DeBuhr <khulnasoft-lab@gmail.com>"]
+description = "Sim Derive is a macro library, which supports the Sim discrete event simulation package"
+homepage = "https://github.com/khulnasoft-lab/sim"
+repository = "https://github.com/khulnasoft-lab/sim"
+readme = "README.md"
+keywords = ["simulation", "discrete", "event", "stochastic", "modeling"]
+categories = ["simulation"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1.0"
+quote = "1.0"
