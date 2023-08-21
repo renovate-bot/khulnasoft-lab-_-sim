@@ -42,11 +42,11 @@ jobs:
           cache-name: cache-dependencies
         with:
           path: |
-            ~/wasm-pack/.cargo/.crates.toml
-            ~/wasm-pack/.cargo/.crates2.json
-            ~/wasm-pack/.cargo/bin
-            ~/wasm-pack/.cargo/registry/index
-            ~/wasm-pack/.cargo/registry/cache
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
             target
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
 
