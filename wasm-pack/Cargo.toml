@@ -11,7 +11,7 @@ categories = ["wasm"]
 documentation = "https://khulnasoft-lab.github.io/sim/wasm-pack/"
 
 [dependencies]
-anyhow = "1.0.68"
+anyhow = "1.0.75"
 atty = "0.2.14"
 binary-install = "0.2.0"
 cargo_metadata = "0.15.2"
