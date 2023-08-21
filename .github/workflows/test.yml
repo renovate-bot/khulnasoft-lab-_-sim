@@ -1,0 +1,62 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [linux-stable, macos-stable, windows-stable]
+        include:
+          - build: linux-stable
+            os: ubuntu-latest
+            rust: stable
+          - build: macos-stable
+            os: macos-latest
+            rust: stable
+          - build: windows-stable
+            os: windows-latest
+            rust: stable
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nanasess/setup-chromedriver@master
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.rust }}
+          targets: wasm32-unknown-unknown
+      - uses: actions/setup-node@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-dependencies
+        with:
+          path: |
+            ~/wasm-pack/.cargo/.crates.toml
+            ~/wasm-pack/.cargo/.crates2.json
+            ~/wasm-pack/.cargo/bin
+            ~/wasm-pack/.cargo/registry/index
+            ~/wasm-pack/.cargo/registry/cache
+            target
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
+
+      - name: Run Tests
+        run: cargo test --all --locked
+        env:
+          RUST_BACKTRACE: 1
+
+      - name: Clippy
+        run: cargo clippy
+
+      - name: Cargo fmt
+        run: cargo fmt --all -- --check
