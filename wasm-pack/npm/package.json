@@ -1,0 +1,34 @@
+{
+  "name": "wasm-pack",
+  "version": "0.12.1",
+  "description": "📦✨ your favorite rust -> wasm workflow tool!",
+  "main": "binary.js",
+  "scripts": {
+    "postinstall": "node ./install.js"
+  },
+  "bin": {
+    "wasm-pack": "./run.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khulnasoft-lab/sim.git"
+  },
+  "keywords": [
+    "wasm",
+    "rust-wasm",
+    "registry",
+    "cli",
+    "rust",
+    "npm",
+    "package"
+  ],
+  "author": "Md Sulaiman <infosulaimanbd@gmail.com>",
+  "license": "MIT OR Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/khulnasoft-lab/sim/issues"
+  },
+  "homepage": "https://github.com/khulnasoft-lab/sim/#readme",
+  "dependencies": {
+    "binary-install": "^1.0.1"
+  }
+}

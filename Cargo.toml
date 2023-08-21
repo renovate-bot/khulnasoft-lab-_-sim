@@ -3,4 +3,5 @@ members = [
     "sim",
     "sim_derive",
     "simx",
+    "wasm-pack",
 ]
